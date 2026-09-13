@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 
 public class Film {
-    // Kode warna ANSI untuk tampilan berwarna di terminal
     private static final String WARNA_BIRU   = "\033[34m";    // warna biru 
     private static final String WARNA_KUNING = "\033[33m";    // warna kuning 
     private static final String WARNA_RESET  = "\033[0m";     // reset warna ke normal
@@ -47,16 +46,16 @@ public class Film {
 
     // Method tampilDurasi: mengubah durasi (menit) menjadi format jam jika >= 1 jam
     public String tampilDurasi() {
-        int jam = durasi / 60;    // hitung jumlah jam
-        int sisa = durasi % 60;   // hitung sisa menit
-        if (jam > 0) {            // jika durasi 60 menit atau lebih
-            String hasil = jam + " jam";   // tampilkan jumlah jam
-            if (sisa > 0) {               // jika ada sisa menit
-                hasil += " " + sisa + " menit";  // tampilkan sisa menit
+        int jam = durasi / 60;                    // hitung jumlah jam
+        int sisa = durasi % 60;                   // hitung sisa menit
+        if (jam > 0) {                            // jika durasi 60 menit atau lebih
+            String hasil = jam + " jam";          // tampilkan jumlah jam
+            if (sisa > 0) {                       // jika ada sisa menit
+                hasil += " " + sisa + " menit";   // tampilkan sisa menit
             }
-            return hasil;         // kembalikan format jam
+            return hasil;                         // kembalikan format jam
         }
-        return durasi + " menit"; // kembali ke format menit
+        return durasi + " menit";                 // kembali ke format menit
     }
 
     // Method cetakGaris: mencetak satu garis border, misal ===
