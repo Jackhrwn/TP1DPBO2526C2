@@ -708,7 +708,7 @@ if (isset($_GET['cari'])) {
     </div>
 
     <footer class="footer">
-        Jaka Permana Herawan-TP1
+        &copy; Jaka Permana Herawan-TP1
     </footer>
 </body>
 </html>
