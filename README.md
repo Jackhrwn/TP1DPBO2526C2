@@ -154,45 +154,6 @@ Pola error handling diterapkan di keempat bahasa:
 9. Daftar kosong
 10. File gambar tidak ada di path
 
----
-
-## Cara Menjalankan
-
-### 1. C++ 
-
-Jalankan dari folder `CPP`:
-
-```bash
-g++ main.cpp -o film.exe     #langsung pakai main.cpp (meng-include bioskop.cpp)
-film.exe
-```
-
-### 2. Python 
-
-Jalankan dari folder `Python`:
-
-```bash
-python main.py
-```
-
-### 3. Java 
-
-Jalankan dari folder `Java`:
-
-```bash
-javac Film.java Main.java
-java Main
-```
-
-### 4. PHP 
-
-Jalankan dari folder `PHP`:
-
-```bash
-php -S localhost:8000
-```
-
-Lalu buka `http://localhost:8000/` di browser.
 
 ---
 

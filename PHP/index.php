@@ -11,10 +11,30 @@ if (!isset($_SESSION['daftar_film'])) {
 
 $pesan = "";   // variabel untuk menampung pesan notifikasi ke user
 
+// Fungsi setFlash: menyimpan pesan notifikasi sementara agar tampil SATU KALI setelah redirect.
+// Dipakai untuk pola POST-Redirect-GET supaya pesan HILANG saat halaman di-reload.
+function setFlash($teks) {
+    $_SESSION['flash_pesan'] = $teks;
+}
+
 // ambil pesan sementara (flash) dari session jika ada, lalu hapus agar tidak tampil 2x
 if (isset($_SESSION['flash_pesan'])) {
     $pesan = $_SESSION['flash_pesan'];
     unset($_SESSION['flash_pesan']);
+}
+
+// ambil data form sementara (hasil submit yang error) lalu hapus, untuk mengisi ulang form
+$formData = null;
+if (isset($_SESSION['form_backup'])) {
+    $formData = $_SESSION['form_backup'];
+    unset($_SESSION['form_backup']);
+}
+
+// ambil nilai pencarian sementara (hasil cari yang tidak ketemu) lalu hapus
+$cariBackup = null;
+if (isset($_SESSION['cari_backup'])) {
+    $cariBackup = $_SESSION['cari_backup'];
+    unset($_SESSION['cari_backup']);
 }
 
 // Fungsi cekIdValid: memeriksa apakah id berupa angka mulai dari 1 (1, 2, 3, ...)
@@ -111,16 +131,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = isset($_POST['id']) ? $_POST['id'] : '';   // ambil nilai id dari form
         // ubah input genre (pisahkan koma) menjadi array genre
         $genreInput = !empty($_POST['genre']) ? array_map('trim', explode(',', $_POST['genre'])) : [];
+        // simpan sementara input user agar form dapat terisi ulang jika ada error
+        $_SESSION['form_backup'] = $_POST;
         if (!cekIdValid($id)) {                    // jika id bukan angka mulai dari 1
-            $pesan = "ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!";  // pesan error validasi id
+            setFlash("ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!");  // pesan error validasi id
         } elseif (cekIdAda((int)$id)) {              // jika id sudah dipakai
-            $pesan = "ID sudah digunakan!";          // tampilkan pesan error id
+            setFlash("ID sudah digunakan!");          // tampilkan pesan error id
         } elseif (!validasiAngka($_POST['harga']) || !validasiAngka($_POST['durasi'])) {   // jika harga/durasi bukan angka
-            $pesan = "Harga dan durasi harus berupa angka yang valid!";  // tampilkan pesan error
+            setFlash("Harga dan durasi harus berupa angka yang valid!");  // tampilkan pesan error
         } elseif (!validasiGenre($genreInput)) {     // jika ada genre yang diawali huruf kecil
-            $pesan = "Genre harus diawali dengan huruf besar (contoh: Action)!";  // tampilkan pesan error
+            setFlash("Genre harus diawali dengan huruf besar (contoh: Action)!");  // tampilkan pesan error
         } elseif (!cekGambarValid($_POST['gambar'])) { // jika gambar bukan path lokal
-            $pesan = "Gambar wajib berisi path file lokal (contoh: gambar/AOT.jpg), bukan URL!";  // pesan error gambar
+            setFlash("Gambar wajib berisi path file lokal (contoh: gambar/AOT.jpg), bukan URL!");  // pesan error gambar
         } else {
             // buat objek Film baru dengan data dari form
             $film = new Film(
@@ -132,8 +154,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 trim($_POST['gambar'])     // isi path gambar lokal
             );
             $_SESSION['daftar_film'][] = $film;   // simpan objek ke dalam session
-            $pesan = "Data berhasil ditambahkan!";  // pesan sukses
+            unset($_SESSION['form_backup']);      // data berhasil, bersihkan cadangan form
+            setFlash("Data berhasil ditambahkan!");  // pesan sukses
         }
+        // redirect agar saat halaman di-reload, pesan tidak muncul lagi dan data tidak terkirim ulang
+        header("Location: index.php");
+        exit;
     }
     // jika aksinya update
     elseif ($aksi === 'update') {
@@ -145,59 +171,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // jika id bukan angka mulai dari 1
         if (!cekIdValid($id)) {
-            $pesan = "ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!";  // pesan error validasi id
+            setFlash("ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!");  // pesan error validasi id
+            header("Location: index.php");
+            exit;
         }
         // jika tidak ada kolom yang dipilih
-        elseif (empty($kolom)) {
-            $pesan = "Pilih minimal satu kolom yang ingin diupdate!";  // pesan error
+        if (empty($kolom)) {
+            setFlash("Pilih minimal satu kolom yang ingin diupdate!");  // pesan error
+            header("Location: index.php?edit=" . (int)$id);   // tetap di mode edit
+            exit;
         }
         // validasi harga dan durasi hanya jika kolom tersebut dipilih
-        elseif ((in_array('harga', $kolom) && !validasiAngka($_POST['harga']))
-             || (in_array('durasi', $kolom) && !validasiAngka($_POST['durasi']))) {
-            $pesan = "Harga dan durasi harus berupa angka yang valid!";  // pesan error
-        } elseif (in_array('genre', $kolom) && !validasiGenre($genreInput)) {
-            $pesan = "Genre harus diawali dengan huruf besar (contoh: Action)!";  // pesan error
-        } elseif (in_array('gambar', $kolom) && !cekGambarValid($_POST['gambar'])) {
-            $pesan = "Gambar wajib berisi path file lokal (contoh: gambar/AOT.jpg), bukan URL!";  // pesan error gambar
-        } else {        
-            $ketemu = false;                                        // penanda data ditemukan
-            $idSasaran = (int)$id;                                  // konversi id sasaran ke integer
-            foreach ($_SESSION['daftar_film'] as $film) {           // cari objek di daftar
-                if ($film->getId() == $idSasaran) {                 // jika id cocok dengan sasaran
-                    $ketemu = true;                                 // tandai data ditemukan
-                    // ubah hanya kolom yang dicentang user
-                    if (in_array('judul', $kolom)) {                // jika judul dicentang
-                        $film->setJudul($_POST['judul']);           // ubah judul lewat setter
-                    }
-                    if (in_array('genre', $kolom)) {                // jika genre dicentang
-                        $film->setGenre($genreInput);               // ubah genre lewat setter
-                    }
-                    if (in_array('harga', $kolom)) {                // jika harga dicentang
-                        $film->setHarga((int)$_POST['harga']);      // ubah harga lewat setter
-                    }
-                    if (in_array('durasi', $kolom)) {               // jika durasi dicentang
-                        $film->setDurasi((int)$_POST['durasi']);    // ubah durasi lewat setter
-                    }
-                    if (in_array('gambar', $kolom)) {               // jika gambar dicentang
-                        $film->setGambar(trim($_POST['gambar']));   // ubah gambar lewat setter
-                    }
+        if ((in_array('harga', $kolom) && !validasiAngka($_POST['harga']))
+         || (in_array('durasi', $kolom) && !validasiAngka($_POST['durasi']))) {
+            setFlash("Harga dan durasi harus berupa angka yang valid!");  // pesan error
+            header("Location: index.php?edit=" . (int)$id);   // tetap di mode edit
+            exit;
+        }
+        if (in_array('genre', $kolom) && !validasiGenre($genreInput)) {
+            setFlash("Genre harus diawali dengan huruf besar (contoh: Action)!");  // pesan error
+            header("Location: index.php?edit=" . (int)$id);
+            exit;
+        }
+        if (in_array('gambar', $kolom) && !cekGambarValid($_POST['gambar'])) {
+            setFlash("Gambar wajib berisi path file lokal (contoh: gambar/AOT.jpg), bukan URL!");  // pesan error gambar
+            header("Location: index.php?edit=" . (int)$id);
+            exit;
+        }
+        // jika validasi lolos, lakukan update pada kolom yang dicentang
+        $ketemu = false;                                        // penanda data ditemukan
+        $idSasaran = (int)$id;                                  // konversi id sasaran ke integer
+        foreach ($_SESSION['daftar_film'] as $film) {           // cari objek di daftar
+            if ($film->getId() == $idSasaran) {                 // jika id cocok dengan sasaran
+                $ketemu = true;                                 // tandai data ditemukan
+                // ubah hanya kolom yang dicentang user
+                if (in_array('judul', $kolom)) {                // jika judul dicentang
+                    $film->setJudul($_POST['judul']);           // ubah judul lewat setter
+                }
+                if (in_array('genre', $kolom)) {                // jika genre dicentang
+                    $film->setGenre($genreInput);               // ubah genre lewat setter
+                }
+                if (in_array('harga', $kolom)) {                // jika harga dicentang
+                    $film->setHarga((int)$_POST['harga']);      // ubah harga lewat setter
+                }
+                if (in_array('durasi', $kolom)) {               // jika durasi dicentang
+                    $film->setDurasi((int)$_POST['durasi']);    // ubah durasi lewat setter
+                }
+                if (in_array('gambar', $kolom)) {               // jika gambar dicentang
+                    $film->setGambar(trim($_POST['gambar']));   // ubah gambar lewat setter
                 }
             }
-            // tampilkan pesan sesuai hasil pencarian
-            if ($ketemu) {                                        // jika data ditemukan dan berhasil diupdate
-                $_SESSION['flash_pesan'] = "Data berhasil diupdate!";  // simpan pesan lewat flash session
-                header("Location: index.php");                   // redirect kembali ke halaman normal (keluar mode edit)
-                exit;                                            // hentikan eksekusi setelah redirect
-            }
-            $pesan = "ID tidak ditemukan!";                      // pesan error id tidak ada
         }
+        // tampilkan pesan sesuai hasil pencarian
+        if ($ketemu) {                                        // jika data ditemukan dan berhasil diupdate
+            setFlash("Data berhasil diupdate!");              // simpan pesan lewat flash session
+            header("Location: index.php");                    // redirect kembali ke halaman normal (keluar mode edit)
+            exit;                                             // hentikan eksekusi setelah redirect
+        }
+        setFlash("ID tidak ditemukan!");                      // pesan error id tidak ada
+        header("Location: index.php");
+        exit;
     }
     // jika aksinya hapus
     elseif ($aksi === 'hapus') {
         $id = isset($_POST['id']) ? $_POST['id'] : '';              // ambil id yang akan dihapus
         // jika id bukan angka mulai dari 1
         if (!cekIdValid($id)) {
-            $pesan = "ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!";  // pesan error validasi id
+            setFlash("ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!");  // pesan error validasi id
         } else {
             $indexHapus = -1;                                       // index sasaran (default belum ketemu)
             $idSasaran = (int)$id;                                  // konversi id ke integer
@@ -207,18 +247,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             if ($indexHapus == -1) {                                // jika tidak ada yang cocok
-                $pesan = "ID tidak ditemukan!";                     // pesan id tidak ada
+                setFlash("ID tidak ditemukan!");                    // pesan id tidak ada
             } else {
                 unset($_SESSION['daftar_film'][$indexHapus]);       // hapus objek pada index tersebut
                 $_SESSION['daftar_film'] = array_values($_SESSION['daftar_film']);  // rapikan index array
-                $pesan = "Data berhasil dihapus!";                  // pesan sukses
+                setFlash("Data berhasil dihapus!");                 // pesan sukses
             }
         }
+        // redirect agar saat halaman di-reload, pesan tidak muncul lagi
+        header("Location: index.php");
+        exit;
     }
     // jika aksinya reset (hapus semua data)
     elseif ($aksi === 'reset') {
         $_SESSION['daftar_film'] = [];   // kosongkan seluruh data
-        $pesan = "Semua data dihapus!";  // pesan sukses
+        setFlash("Semua data dihapus!");  // pesan sukses
+        // redirect agar saat halaman di-reload, pesan tidak muncul lagi
+        header("Location: index.php");
+        exit;
     }
 }
 
@@ -237,19 +283,24 @@ $filmCari = null;                       // variabel untuk hasil pencarian film
 // jika ada parameter cari di URL
 if (isset($_GET['cari'])) {
     $idCari = $_GET['cari'];            // ambil id yang dicari dari URL
+    // simpan sementara input pencarian agar kotak cari tetap terisi setelah redirect
+    $_SESSION['cari_backup'] = $idCari;
     // jika id bukan angka mulai dari 1
     if (!cekIdValid($idCari)) {
-        $pesan = "ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!";  // pesan error validasi id
-    } else {
-        $idCariInt = (int)$idCari;                      // konversi id cari ke integer
-        foreach ($_SESSION['daftar_film'] as $film) {   // cari objek di daftar
-            if ($film->getId() == $idCariInt) {         // jika id cocok
-                $filmCari = $film;                      // simpan ke variabel filmCari
-            }
+        setFlash("ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!");  // pesan error validasi id
+        header("Location: index.php");   // redirect agar pesan hilang saat reload
+        exit;
+    }
+    $idCariInt = (int)$idCari;                      // konversi id cari ke integer
+    foreach ($_SESSION['daftar_film'] as $film) {   // cari objek di daftar
+        if ($film->getId() == $idCariInt) {         // jika id cocok
+            $filmCari = $film;                      // simpan ke variabel filmCari
         }
-        if ($filmCari === null) {                       // jika pencarian tidak menemukan apa pun
-            $pesan = "ID $idCariInt tidak ditemukan!";  // pesan error id tidak ada
-        }
+    }
+    if ($filmCari === null) {                       // jika pencarian tidak menemukan apa pun
+        setFlash("ID $idCariInt tidak ditemukan!"); // pesan error id tidak ada
+        header("Location: index.php");              // redirect agar pesan hilang saat reload
+        exit;
     }
 }
 ?>
@@ -559,17 +610,17 @@ if (isset($_GET['cari'])) {
             <form method="POST">   <!-- form input data film -->
                 <input type="hidden" name="aksi" value="<?php echo $filmEdit ? 'update' : 'tambah'; ?>">  <!-- aksi form -->
                 <label class="label-field">ID</label>
-                <input type="number" name="id" value="<?php echo $filmEdit ? $filmEdit->getId() : (isset($_POST['id']) ? (int)$_POST['id'] : ''); ?>" placeholder="1" min="1" <?php echo $filmEdit ? 'readonly' : ''; ?> required>
+                <input type="number" name="id" value="<?php echo $filmEdit ? $filmEdit->getId() : (isset($formData['id']) ? (int)$formData['id'] : ''); ?>" placeholder="1" min="1" <?php echo $filmEdit ? 'readonly' : ''; ?> required>
                 <label class="label-field">Judul</label>
-                <input type="text" name="judul" value="<?php echo $filmEdit ? htmlspecialchars($filmEdit->getJudul()) : ''; ?>" placeholder="Judul Film" <?php echo $filmEdit ? '' : 'required'; ?>>
+                <input type="text" name="judul" value="<?php echo $filmEdit ? htmlspecialchars($filmEdit->getJudul()) : (isset($formData['judul']) ? htmlspecialchars($formData['judul']) : ''); ?>" placeholder="Judul Film" <?php echo $filmEdit ? '' : 'required'; ?>>
                 <label class="label-field">Genre</label>
-                <input type="text" name="genre" value="<?php echo $filmEdit ? htmlspecialchars($filmEdit->getGenreText()) : (isset($_POST['genre']) ? htmlspecialchars($_POST['genre']) : ''); ?>" placeholder="Action, Drama, ..." <?php echo $filmEdit ? '' : 'required'; ?>>
+                <input type="text" name="genre" value="<?php echo $filmEdit ? htmlspecialchars($filmEdit->getGenreText()) : (isset($formData['genre']) ? htmlspecialchars($formData['genre']) : ''); ?>" placeholder="Action, Drama, ..." <?php echo $filmEdit ? '' : 'required'; ?>>
                 <label class="label-field">Harga</label>
-                <input type="number" name="harga" value="<?php echo $filmEdit ? $filmEdit->getHarga() : ''; ?>" placeholder="50000" <?php echo $filmEdit ? '' : 'required'; ?>>
+                <input type="number" name="harga" value="<?php echo $filmEdit ? $filmEdit->getHarga() : (isset($formData['harga']) ? (int)$formData['harga'] : ''); ?>" placeholder="50000" <?php echo $filmEdit ? '' : 'required'; ?>>
                 <label class="label-field">Durasi (Menit)</label>
-                <input type="number" name="durasi" value="<?php echo $filmEdit ? $filmEdit->getDurasi() : ''; ?>" placeholder="Contoh: 120" <?php echo $filmEdit ? '' : 'required'; ?>>
+                <input type="number" name="durasi" value="<?php echo $filmEdit ? $filmEdit->getDurasi() : (isset($formData['durasi']) ? (int)$formData['durasi'] : ''); ?>" placeholder="Contoh: 120" <?php echo $filmEdit ? '' : 'required'; ?>>
                 <label class="label-field">Gambar (Path Lokal)</label>
-                <input type="text" name="gambar" value="<?php echo $filmEdit ? htmlspecialchars($filmEdit->getGambar()) : (isset($_POST['gambar']) ? htmlspecialchars($_POST['gambar']) : ''); ?>" placeholder="Contoh: gambar/AOT.jpg" <?php echo $filmEdit ? '' : 'required'; ?>>
+                <input type="text" name="gambar" value="<?php echo $filmEdit ? htmlspecialchars($filmEdit->getGambar()) : (isset($formData['gambar']) ? htmlspecialchars($formData['gambar']) : ''); ?>" placeholder="Contoh: gambar/AOT.jpg" <?php echo $filmEdit ? '' : 'required'; ?>>
                 <p style="font-size:12px;color:#888;margin-top:4px;">Masukkan path file gambar lokal (contoh: <b>gambar/AOT.jpg</b>), bukan URL internet.</p>
 
                 <?php if ($filmEdit): ?>   <!-- jika sedang mode update -->
@@ -600,7 +651,7 @@ if (isset($_GET['cari'])) {
             <h2>🔍 Cari Data Film</h2>
             <form method="GET">   <!-- form pencarian film -->
                 <label class="label-field">ID</label>
-                <input type="number" name="cari" value="<?php echo isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : ''; ?>" placeholder="Masukkan ID film (1, 2, 3, ...)" min="1">
+                <input type="number" name="cari" value="<?php echo isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : (isset($cariBackup) ? htmlspecialchars($cariBackup) : ''); ?>" placeholder="Masukkan ID film (1, 2, 3, ...)" min="1">
                 <button type="submit" class="btn btn-cari">Cari Film</button>
             </form>
         </div>
