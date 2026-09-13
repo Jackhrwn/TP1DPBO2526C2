@@ -1,6 +1,6 @@
 # Manajemen Bioskop
 
-Program sederhana untuk mengelola data film di sebuah bioskop menggunakan konsep **Object-Oriented Programming (OOP)**. Program dibuat dalam **4 bahasa pemrograman**: **C++** (CLI), **Python** (CLI), **Java** (CLI), dan **PHP** (Web).
+Program sederhana untuk mengelola data film di sebuah bioskop menggunakan konsep **Object-Oriented Programming (OOP)**. Program dibuat dalam **4 bahasa pemrograman**: **C++**, **Python**, **Java**, dan **PHP**.
 
 ---
 
@@ -14,7 +14,7 @@ Saya Jaka Permana Herawan dengan NIM 2509371 mengerjakan Tugas Praktikum 1 pada 
 
 ### Class: `Film`
 
-Setiap bahasa menggunakan satu class bernama `Film` (nama class bebas, di sini disesuaikan dengan tema bioskop).
+Setiap bahasa menggunakan satu class bernama `Film`.
 
 | Bahasa | Atribut Class `Film` | Jumlah Atribut |
 |--------|----------------------|----------------|
@@ -32,9 +32,37 @@ Keterangan atribut:
 | `genre` | array of string | Genre film (bisa lebih dari satu, contoh: `["Action", "Drama"]`) |
 | `harga` | int | Harga tiket film dalam rupiah |
 | `durasi` | int | Durasi film dalam menit (ditampilkan sebagai jam jika ≥ 60 menit) |
-| `gambar` | string | Path file gambar poster lokal (contoh: `gambar/AOT.jpg`). **Khusus PHP wajib ada** dan harus path file lokal, **bukan URL internet** |
+| `gambar` | string | Path file gambar poster lokal (contoh: `gambar/AOT.jpg`). **Khusus PHP** dan berupa path file lokal, **bukan URL internet** |
 
-Seluruh atribut dibuat **private** dan dilengkapi **getter/setter** sehingga mengakses/mengubah nilai hanya lewat method (konsep **enkapsulasi**).
+Seluruh atribut dibuat **private** dan dilengkapi **getter/setter** sehingga mengakses/mengubah nilai hanya lewat method.
+
+
+## Struktur Folder
+
+```
+.
+├── CPP/
+│   ├── bioskop.cpp   (definisi class Film)
+│   └── main.cpp      (menu utama + pengelolaan data + error handling)
+├── Python/
+│   ├── film.py       (definisi class Film)
+│   └── main.py       (menu utama + pengelolaan data + error handling)
+├── Java/
+│   ├── Film.java     (definisi class Film)
+│   └── Main.java     (menu utama + pengelolaan data + error handling)
+├── PHP/
+│   ├── Film.php      (definisi class Film, termasuk atribut gambar)
+│   ├── index.php     (halaman web + pengelolaan data + error handling)
+│   └── gambar/       (folder poster lokal)
+│       ├── AOT.jpg   (contoh gambar poster1)
+|       └── kimi no nawa.jpg (contoh gambar poster2)
+├── Dokumentasi/
+│   ├── CPP/          
+│   ├── Python/       
+│   ├── Java/         
+│   └── PHP/          
+└── Readme.md
+```
 
 ### Penyimpanan Data
 
@@ -45,43 +73,8 @@ Data dikelola dalam **array/list of object** (tanpa database, data hanya di memo
 | C++ | `vector<Film>` | objek `Film` |
 | Python | `list` | objek `Film` |
 | Java | `ArrayList<Film>` | objek `Film` |
-| PHP | `$_SESSION['daftar_film']` (session, bertahan antar halaman) | objek `Film` |
+| PHP | `$_SESSION['daftar_film']` (session) | objek `Film` |
 
-### Alur Program
-
-**CLI (C++, Python, Java):**
-
-```
-START
-  v
-TAMPILKAN MENU (1-6)
-  v
-PILIHAN ?--------+
-  |              |
-  1. Tambah  --> input data -> cek ID unik -> tambah objek Film baru ke list
-  2. Tampil  --> iterasi list -> panggil method tampilkan() tiap objek
-  3. Update  --> cari objek berdasar ID -> pilih kolom yang mau diubah -> ubah atribut via setter
-  4. Hapus   --> cari objek berdasar ID -> hapus dari list
-  5. Cari    --> cari objek berdasar ID -> tampilkan data objek
-  6. Keluar  --> STOP
-  |              |
-  +--> kembali ke MENU
-```
-
-**Web (PHP):** alur ditangani lewat satu file `index.php`. Halaman mendeteksi request `POST` maupun `GET`:
-
-```
-BUKA index.php
-  v
-PARAMETER ?edit=  ?  ---------+  (masuk mode update, form terisi data lama)
-            no               |
-  v                            |
-FORM TAMBAH / UPDATE ----------+  -> POST aksi = tambah / update / hapus / reset
-  v                              -> validasi data; sukses/gagal tampil pesan
-GET ?cari=ID  -> pencarian film, ketemu = kotak hasil, tidak ketemu = pesan error
-  v
-TABEL / KARTU DAFTAR FILM + tombol aksi (Edit, Hapus) + Reset
-```
 
 ### Fungsi Utama
 
@@ -91,15 +84,11 @@ TABEL / KARTU DAFTAR FILM + tombol aksi (Edit, Hapus) + Reset
 4. **Hapus data** — mencari objek berdasarkan ID, lalu menghapusnya dari list.
 5. **Cari data** — mencari objek berdasarkan ID; jika ketemu tampilkan detailnya, jika tidak tampilkan pesan "tidak ditemukan".
 
-> Pencarian/validasi ID dan pengubahan data dilakukan **tanpa memakai `break`** di dalam perulangan; perulangan dijalankan sampai selesai lalu hasilnya diproses setelahnya.
-
 ---
 
-## Error Handling
+## Error Handling semua bahasa
 
-### Umum (semua bahasa)
-
-Program dirancang agar **tidak crash** saat pengguna salah input. Pola error handling yang sama diterapkan di keempat bahasa:
+Pola error handling diterapkan di keempat bahasa:
 
 1. **Input bukan angka** → tidak langsung crash; program meminta ulang sampai input valid.
 2. **ID bukan angka mulai dari 1** → pesan `"ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!"`.
@@ -114,88 +103,71 @@ Program dirancang agar **tidak crash** saat pengguna salah input. Pola error han
 
 #### 1. Folder `CPP/` (C++)
 
-File: `main.cpp` (pengelolaan data + menu), `bioskop.cpp` (class `Film`).
+1. Input bukan angka (menu, ID, harga, durasi, jumlah genre, pilihan kolom)
+2. ID bukan angka mulai dari 1 (tambah/update/hapus/cari)
+3. ID sudah dipakai saat tambah
+4. Jumlah genre kurang dari 1
+5. Genre diawali huruf kecil
+6. ID tidak ditemukan saat update/hapus
+7. ID tidak ditemukan saat cari
+8. Pilihan kolom update bukan 1-5
+9. Pilihan menu bukan 1-6
+10. Daftar kosong saat menampilkan data
 
-| Skenario | Cara Ditangani | Pesan yang Ditampilkan |
-|----------|----------------|------------------------|
-| Input bukan angka (menu, ID, harga, durasi, jumlah genre, pilihan kolom) | Fungsi `inputAngka()` (main.cpp:70) membaca baris utuh lalu memeriksa tiap karakter dengan `isdigit()`; perulangan `while(true)` meminta ulang sampai valid | `Input harus berupa angka! Silakan coba lagi.` (merah) |
-| ID < 1 (tambah/update/hapus/cari) | `cekIdValid()` dalam perulangan `while(true)` | `ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!` |
-| ID sudah dipakai (tambah) | `cekIdAda()` memeriksa seluruh `vector<Film>` | `ID sudah digunakan!` |
-| Jumlah genre < 1 | validasi `while(true)` | `Jumlah genre harus angka mulai dari 1!` |
-| Genre diawali huruf kecil | cek `isupper(g[0])` | `Genre harus diawali dengan huruf besar (contoh: Action)!` |
-| ID tidak ditemukan (update/hapus) | `idxSasaran` / `idxHapus` tetap `-1` | `ID tidak ditemukan!` |
-| ID tidak ditemukan (cari) | `idxCari` tetap `-1` | `Film dengan ID 'X' tidak ditemukan!` |
-| Pilihan kolom update bukan 1-5 | `default` pada `switch` | `Pilihan tidak valid!` |
-| Pilihan menu bukan 1-6 | `default` pada `switch` di `main()` | `Pilihan tidak valid!` |
-| Daftar kosong saat tampil | `daftar.empty()` | `Belum ada data film.` |
 
 #### 2. Folder `Python/` (Python)
 
-File: `main.py` (pengelolaan data + menu), `film.py` (class `Film`).
-
-| Skenario | Cara Ditangani | Pesan yang Ditampilkan |
-|----------|----------------|------------------------|
-| Input bukan angka | Fungsi `input_angka()` (main.py:50) membungkus `int(input(...))` dengan `try/except ValueError`; diulangi sampai benar | `Input harus berupa angka! Silakan coba lagi.` (merah) |
-| ID < 1 | `cek_id_valid()` dalam perulangan | `ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!` |
-| ID sudah dipakai | `cek_id_ada()` | `ID sudah digunakan!` |
-| Jumlah genre < 1 | validasi `while` | `Jumlah genre harus angka mulai dari 1!` |
-| Genre diawali huruf kecil | cek `g[0].isupper()` | `Genre harus diawali dengan huruf besar (contoh: Action)!` |
-| ID tidak ditemukan (update/hapus) | objek/index sasaran `None` / `-1` | `ID tidak ditemukan!` |
-| ID tidak ditemukan (cari) | objek hasil `None` | `Film dengan ID 'X' tidak ditemukan!` |
-| Pilihan kolom/menu salah | cabang `else` | `Pilihan tidak valid!` |
-| Daftar kosong saat tampil | `if not daftar` | `Belum ada data film.` |
+1. Input bukan angka (menu, ID, harga, durasi, jumlah genre, pilihan kolom)
+2. ID bukan angka mulai dari 1 (tambah/update/hapus/cari)
+3. ID sudah dipakai saat tambah
+4. Jumlah genre kurang dari 1
+5. Genre diawali huruf kecil
+6. ID tidak ditemukan saat update/hapus
+7. ID tidak ditemukan saat cari
+8. Pilihan kolom/menu salah
+9. Daftar kosong saat menampilkan data
 
 #### 3. Folder `Java/` (Java)
 
-File: `Main.java` (pengelolaan data + menu), `Film.java` (class `Film`).
+1. Input bukan angka (menu, ID, harga, durasi, jumlah genre, pilihan kolom)
+2. ID bukan angka mulai dari 1 (tambah/update/hapus/cari)
+3. ID sudah dipakai saat tambah
+4. Jumlah genre kurang dari 1
+5. Genre diawali huruf kecil
+6. ID tidak ditemukan saat update/hapus
+7. ID tidak ditemukan saat cari
+8. Pilihan kolom update bukan 1-5
+9. Pilihan menu bukan 1-6
+10. Daftar kosong saat menampilkan data
 
-| Skenario | Cara Ditangani | Pesan yang Ditampilkan |
-|----------|----------------|------------------------|
-| Input bukan angka | Fungsi `inputAngka()` (Main.java:59) membaca baris utuh dan memeriksa tiap karakter dengan `Character.isDigit()`; `class InputMismatchException` diimport untuk menangkap input angka yang salah (metode alternatif `try/catch`); perulangan meminta ulang | `Input harus berupa angka! Silakan coba lagi.` (merah) |
-| ID < 1 | `cekIdValid()` dalam perulangan | `ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!` |
-| ID sudah dipakai | `cekIdAda()` | `ID sudah digunakan!` |
-| Jumlah genre < 1 | validasi `while` | `Jumlah genre harus angka mulai dari 1!` |
-| Genre diawali huruf kecil | cek `Character.isUpperCase(g.charAt(0))` | `Genre harus diawali dengan huruf besar (contoh: Action)!` |
-| ID tidak ditemukan (update/hapus) | objek/index sasaran `null` / `-1` | `ID tidak ditemukan!` |
-| ID tidak ditemukan (cari) | objek hasil `null` | `Film dengan ID 'X' tidak ditemukan!` |
-| Pilihan kolom update bukan 1-5 | `default` pada `switch` | `Pilihan tidak valid!` |
-| Pilihan menu bukan 1-6 | `default` pada `switch` | `Pilihan tidak valid!` |
-| Daftar kosong saat tampil | `daftarFilm.isEmpty()` | `Belum ada data film.` |
 
-#### 4. Folder `PHP/` (PHP — Web)
+#### 4. Folder `PHP/` (PHP)
 
-File: `index.php` (halaman web + logika pengelolaan), `Film.php` (class `Film`), folder `gambar/` (poster lokal, contoh `AOT.jpg`).
-
-| Skenario | Cara Ditangani | Pesan yang Ditampilkan |
-|----------|----------------|------------------------|
-| ID bukan angka mulai dari 1 (tambah/update) | Fungsi `cekIdValid()` | `ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!` |
-| ID sudah dipakai (tambah) | Fungsi `cekIdAda()` | `ID sudah digunakan!` |
-| Harga/durasi bukan angka valid | Fungsi `validasiAngka()` | `Harga dan durasi harus berupa angka yang valid!` |
-| Genre tidak diawali huruf besar / kosong | Fungsi `validasiGenre()` (regex `^[A-Z]`) | `Genre harus diawali dengan huruf besar (contoh: Action)!` |
-| Gambar diisi URL (http/https/data:) atau kosong | Fungsi `cekGambarValid()` menolak string berawalan `http://`, `https://`, `data:`, `//` | `Gambar wajib berisi path file lokal (contoh: gambar/AOT.jpg), bukan URL!` |
-| Update tanpa mencetang kolom | `empty($kolom)` | `Pilih minimal satu kolom yang ingin diupdate!` |
-| ID tidak ditemukan (update/hapus) | hasil pencarian `false` / index `-1` | `ID tidak ditemukan!` |
-| ID tidak ditemukan (cari via `?cari=`) | `$filmCari === null` setelah perulangan | `ID X tidak ditemukan!` |
-| Daftar kosong | `count($_SESSION['daftar_film']) === 0` | kartu kosong: `Belum ada data film. Silakan tambahkan terlebih dahulu.` |
-| File gambar tidak ada di path | `file_exists()` di fungsi `tampilGambar()`; orientasi gambar dideteksi dari `getimagesize()` | teks `Tanpa gambar` |
-| Pesan sukses vs error | deteksi otomatis via regex `/(tidak\|harus\|sudah digunakan\|minimal)/` → tampil hijau (sukses) / merah (error) | - |
-
-> Khusus PHP: tidak ada `try/catch` karena tidak membaca input dari konsol; semua input lewat form. Validasi dilakukan berlapis dengan `isset()`, `is_numeric()`, `preg_match()`, dan `file_exists()` sehingga program tidak pernah error fatal akibat input user.
+1. ID bukan angka mulai dari 1 (tambah/update)
+2. ID sudah dipakai saat tambah
+3. Harga/durasi bukan angka valid
+4. Genre tidak diawali huruf besar / kosong
+5. Gambar diisi URL (http/https/data:) atau kosong
+6. Update tanpa mencetang kolom
+7. ID tidak ditemukan saat update/hapus
+8. ID tidak ditemukan saat cari (via `?cari=`)
+9. Daftar kosong
+10. File gambar tidak ada di path
 
 ---
 
 ## Cara Menjalankan
 
-### 1. C++ (CLI)
+### 1. C++ 
 
 Jalankan dari folder `CPP`:
 
 ```bash
-g++ main.cpp -o film.exe     # atau langsung pakai main.cpp (meng-include bioskop.cpp)
+g++ main.cpp -o film.exe     #langsung pakai main.cpp (meng-include bioskop.cpp)
 film.exe
 ```
 
-### 2. Python (CLI)
+### 2. Python 
 
 Jalankan dari folder `Python`:
 
@@ -203,7 +175,7 @@ Jalankan dari folder `Python`:
 python main.py
 ```
 
-### 3. Java (CLI)
+### 3. Java 
 
 Jalankan dari folder `Java`:
 
@@ -212,7 +184,7 @@ javac Film.java Main.java
 java Main
 ```
 
-### 4. PHP (Web)
+### 4. PHP 
 
 Jalankan dari folder `PHP`:
 
@@ -224,49 +196,9 @@ Lalu buka `http://localhost:8000/` di browser.
 
 ---
 
-## Struktur Folder
-
-```
-.
-├── CPP/
-│   ├── bioskop.cpp   (definisi class Film)
-│   └── main.cpp      (menu utama + pengelolaan data + error handling)
-│   └── film.exe      (hasil kompilasi, opsional)
-├── Python/
-│   ├── film.py       (definisi class Film)
-│   └── main.py       (menu utama + pengelolaan data + error handling)
-├── Java/
-│   ├── Film.java     (definisi class Film)
-│   └── Main.java     (menu utama + pengelolaan data + error handling)
-│   └── Film.class / Main.class  (hasil kompilasi, opsional)
-├── PHP/
-│   ├── Film.php      (definisi class Film, termasuk atribut gambar)
-│   ├── index.php     (halaman web + pengelolaan data + error handling)
-│   └── gambar/       (folder poster lokal)
-│       └── AOT.jpg   (contoh gambar poster)
-├── Dokumentasi/
-│   ├── TEMPLATE.md   (template dokumentasi / bukti)
-│   ├── CPP/          (buat bukti C++)
-│   ├── Python/       (buat bukti Python)
-│   ├── Java/         (buat bukti Java)
-│   └── PHP/          (buat bukti PHP)
-└── Readme.md
-```
-
-> Catatan: file `film.exe`, `.class`, `__pycache__` adalah hasil/artefak kompilasi dan tidak wajib di-commit.
-
----
 
 ## Dokumentasi
 
-Bukti penggunaan program (screenshot/screenrecord) ditempatkan di folder `Dokumentasi` sesuai bahasanya:
+Bukti penggunaan program (screenshot) ditempatkan di folder `Dokumentasi` sesuai bahasanya:
 
-| Bahasa | Folder Tempat | Contoh Nama File |
-|--------|---------------|------------------|
-| C++ | `Dokumentasi/CPP/` | `MENGGUNAKAN CPP.png` |
-| Python | `Dokumentasi/Python/` | `MENGGUNAKAN Python.png` |
-| Java | `Dokumentasi/Java/` | `MENGGUNAKAN Java.png` |
-| PHP | `Dokumentasi/PHP/` | `MENGGUNAKAN PHP.png` |
 
-- File dapat berupa gambar (`.png`, `.jpg`) maupun video screenrecord (`.mp4`, `.gif`).
-- **Template dokumentasi lengkap** (daftar skenario yang wajib dibuktikan + format tabel bukti) sudah disediakan di **`Dokumentasi/TEMPLATE.md`** — salin isinya lalu isi sesuai hasil uji coba.
