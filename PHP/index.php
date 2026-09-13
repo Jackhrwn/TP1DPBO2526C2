@@ -571,7 +571,7 @@ if (isset($_GET['cari'])) {
         </div>
 
         <?php if ($pesan): ?>   <!-- jika ada pesan -->
-            <?php $isError = preg_match('/(tidak|harus|sudah digunakan|minimal)/', $pesan); ?>
+            <?php $isError = preg_match('/(tidak|harus|sudah digunakan|minimal|wajib)/', $pesan); ?>
             <!-- tampilkan pesan notifikasi (sukses/error) -->
             <div class="pesan <?php echo $isError ? 'pesan-error' : 'pesan-sukses'; ?>"><?php echo $pesan; ?></div>
         <?php endif; ?>
