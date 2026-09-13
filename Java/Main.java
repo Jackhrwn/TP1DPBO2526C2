@@ -119,22 +119,22 @@ public class Main {
             System.out.println(teksMerah("Jumlah genre harus angka mulai dari 1!\n"));  // pesan error
         }
         ArrayList<String> genre = new ArrayList<>();  // list genre
-        for (int i = 0; i < jumlahGenre; i++) {  // minta genre satu per satu
-            while (true) {                       // ulangi sampai genre ini valid
+        for (int i = 0; i < jumlahGenre; i++) {       // minta genre satu per satu
+            while (true) {                            // ulangi sampai genre ini valid
                 System.out.print("Genre ke-" + (i + 1) + "       : ");  // minta genre ke-i
                 String g = scanner.nextLine().trim();  // baca genre tanpa spasi
                 if (!g.isEmpty() && Character.isUpperCase(g.charAt(0))) {  // jika awal huruf besar
-                    genre.add(g);                // simpan genre
-                    break;                       // lanjut ke genre berikutnya
+                    genre.add(g);                      // simpan genre
+                    break;                             // lanjut ke genre berikutnya
                 }
                 System.out.println(teksMerah("Genre harus diawali dengan huruf besar (contoh: Action)!\n"));  // pesan error
             }
         }
-        int harga = inputAngka("Harga Tiket      : ");  // baca harga dengan error handling
-        int durasi = inputAngka("Durasi (menit)   : "); // baca durasi dengan error handling
+        int harga = inputAngka("Harga Tiket      : ");                    // baca harga dengan error handling
+        int durasi = inputAngka("Durasi (menit)   : ");                   // baca durasi dengan error handling
 
-        Film baru = new Film(id, judul, genre, harga, durasi); // buat objek Film baru
-        daftarFilm.add(baru);                                  // simpan ke dalam list
+        Film baru = new Film(id, judul, genre, harga, durasi);            // buat objek Film baru
+        daftarFilm.add(baru);                                             // simpan ke dalam list
         System.out.println(teksHijau("Data berhasil ditambahkan!"));      // konfirmasi sukses
     }
 
@@ -184,7 +184,7 @@ public class Main {
 
     // Method updateData: mengubah data objek Film berdasarkan id dengan pilihan kolom
     private static void updateData() {
-        int id;                                        // variabel id sasaran (angka mulai dari 1)
+        int id;                                    // variabel id sasaran (angka mulai dari 1)
         while (true) {                             // ulangi sampai id valid
             id = inputAngka("Masukkan ID yang akan diupdate : ");  // baca id sasaran (angka) dengan error handling
             if (cekIdValid(id)) {                  // jika id valid (mulai dari 1)
@@ -231,14 +231,14 @@ public class Main {
                         if (jumlahGenreBaru >= 1) break;        // jumlah benar (mulai dari 1)
                         System.out.println(teksMerah("Jumlah genre harus angka mulai dari 1!\n"));  // pesan error
                     }
-                    ArrayList<String> genreBaru = new ArrayList<>();  // list genre
-                    for (int i = 0; i < jumlahGenreBaru; i++) {  // minta genre satu per satu
-                        while (true) {                       // ulangi sampai genre ini valid
+                    ArrayList<String> genreBaru = new ArrayList<>();         // list genre
+                    for (int i = 0; i < jumlahGenreBaru; i++) {              // minta genre satu per satu
+                        while (true) {                                       // ulangi sampai genre ini valid
                             System.out.print("Genre ke-" + (i + 1) + "        : ");  // minta genre ke-i
-                            String g = scanner.nextLine().trim();  // baca genre tanpa spasi
+                            String g = scanner.nextLine().trim();            // baca genre tanpa spasi
                             if (!g.isEmpty() && Character.isUpperCase(g.charAt(0))) {  // jika awal huruf besar
-                                genreBaru.add(g);            // simpan genre
-                                break;                       // lanjut ke genre berikutnya
+                                genreBaru.add(g);                            // simpan genre
+                                break;                                       // lanjut ke genre berikutnya
                             }
                             System.out.println(teksMerah("Genre harus diawali dengan huruf besar (contoh: Action)!\n"));  // pesan error
                         }
@@ -295,7 +295,7 @@ public class Main {
 
     // Method cariData: mencari satu objek Film berdasarkan id
     private static void cariData() {
-        int id;                                        // variabel id pencarian (angka mulai dari 1)
+        int id;                                    // variabel id pencarian (angka mulai dari 1)
         while (true) {                             // ulangi sampai id valid
             id = inputAngka("Masukkan ID yang dicari : ");  // baca id pencarian (angka) dengan error handling
             if (cekIdValid(id)) {                  // jika id valid (mulai dari 1)
