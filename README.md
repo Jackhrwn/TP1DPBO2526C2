@@ -42,25 +42,25 @@ Seluruh atribut dibuat **private** dan dilengkapi **getter/setter** sehingga men
 ```
 .
 ├── CPP/
-│   ├── bioskop.cpp   (definisi class Film)
+│   ├── bioskop.cpp   (class Film)
 │   └── main.cpp      (menu utama + pengelolaan data + error handling)
 ├── Python/
-│   ├── film.py       (definisi class Film)
+│   ├── film.py       (class Film)
 │   └── main.py       (menu utama + pengelolaan data + error handling)
 ├── Java/
-│   ├── Film.java     (definisi class Film)
+│   ├── Film.java     (class Film)
 │   └── Main.java     (menu utama + pengelolaan data + error handling)
 ├── PHP/
-│   ├── Film.php      (definisi class Film, termasuk atribut gambar)
+│   ├── Film.php      (class Film, termasuk atribut gambar)
 │   ├── index.php     (halaman web + pengelolaan data + error handling)
 │   └── gambar/       (folder poster lokal)
 │       ├── AOT.jpg   (contoh gambar poster1)
-|       └── kimi no nawa.jpg (contoh gambar poster2)
-├── Dokumentasi/
-│   ├── CPP/          
-│   ├── Python/       
-│   ├── Java/         
-│   └── PHP/          
+│       └── kimi no nawa.jpg (contoh gambar poster2)
+├── Dokumentasi (Untuk error handling di README.md)/
+│   ├── CPP/          (screenshot output C++)
+│   ├── Python/       (screenshot output Python)
+│   ├── Java/         (screenshot output Java)
+│   └── PHP/          (screenshot output PHP)
 └── Readme.md
 ```
 
@@ -78,8 +78,8 @@ Data dikelola dalam **array/list of object** (tanpa database, data hanya di memo
 
 ### Fungsi Utama
 
-1. **Tambah data** — membaca input (ID, judul, genre, harga, durasi). Memeriksa ID berupa angka mulai dari 1 (`cekIdValid()`) dan ID belum dipakai (`cekIdAda()`), lalu `push_back` / `add` / `append` objek ke list.
-2. **Tampilkan data** — jika list kosong tampilkan pesan; jika tidak, iterasi seluruh objek dan panggil `tampilkan()`. Durasi ≥ 60 menit ditampilkan dalam format jam (misal `135 menit` → `2 jam 15 menit`).
+1. **Tambah data** — membaca input (ID, judul, genre, harga, durasi). Memeriksa ID berupa angka mulai dari 1 dan ID belum dipakai, lalu `push_back` / `add` / `append` objek ke list.
+2. **Tampilkan data** — jika list kosong tampilkan pesan; jika tidak, iterasi seluruh objek dimulai degan ID 1. Durasi ≥ 60 menit ditampilkan dalam format jam (misal `135 menit` → `2 jam 15 menit`).
 3. **Update data** — membaca ID sasaran, mencari objek di list, menampilkan **pilihan kolom** yang ingin diubah (judul, genre, harga, durasi) dan hanya memperbarui kolom yang dipilih lewat setter.
 4. **Hapus data** — mencari objek berdasarkan ID, lalu menghapusnya dari list.
 5. **Cari data** — mencari objek berdasarkan ID; jika ketemu tampilkan detailnya, jika tidak tampilkan pesan "tidak ditemukan".
@@ -91,75 +91,31 @@ Data dikelola dalam **array/list of object** (tanpa database, data hanya di memo
 Pola error handling diterapkan di keempat bahasa:
 
 1. **Input bukan angka** → tidak langsung crash; program meminta ulang sampai input valid.
+  ### C++, Java dan Python:
+  ### PHP:
+  Untuk di php yang masukkan Int tidak bisa mengisi String
+
 2. **ID bukan angka mulai dari 1** → pesan `"ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!"`.
+  ### C++, Java dan Python:
+  ### PHP:
 3. **ID sudah dipakai** (tambah) → pesan `"ID sudah digunakan!"`.
+  ### C++, Java dan Python:
+  ### PHP:
 4. **Jumlah genre kurang dari 1** → pesan `"Jumlah genre harus angka mulai dari 1!"`.
+  ### C++, Java dan Python:
+  ### PHP:
 5. **Genre tidak diawali huruf besar** → pesan `"Genre harus diawali dengan huruf besar (contoh: Action)!"`.
+  ### C++, Java dan Python:
+  ### PHP:
 6. **ID tidak ditemukan** (update/hapus/cari) → pesan `"ID tidak ditemukan!"`.
+  ### C++, Java dan Python:
+  ### PHP:
 7. **Pilihan menu/kolom di luar jangkauan** → pesan `"Pilihan tidak valid!"`.
+  ### C++, Java dan Python:
+  ### PHP:
 8. **Daftar kosong** saat tampil → pesan `"Belum ada data film."`.
+  ### C++, Java dan Python:
+  ### PHP:
 
-### Error Handling per Folder
-
-#### 1. Folder `CPP/` (C++)
-
-1. Input bukan angka (menu, ID, harga, durasi, jumlah genre, pilihan kolom)
-2. ID bukan angka mulai dari 1 (tambah/update/hapus/cari)
-3. ID sudah dipakai saat tambah
-4. Jumlah genre kurang dari 1
-5. Genre diawali huruf kecil
-6. ID tidak ditemukan saat update/hapus
-7. ID tidak ditemukan saat cari
-8. Pilihan kolom update bukan 1-5
-9. Pilihan menu bukan 1-6
-10. Daftar kosong saat menampilkan data
-
-
-#### 2. Folder `Python/` (Python)
-
-1. Input bukan angka (menu, ID, harga, durasi, jumlah genre, pilihan kolom)
-2. ID bukan angka mulai dari 1 (tambah/update/hapus/cari)
-3. ID sudah dipakai saat tambah
-4. Jumlah genre kurang dari 1
-5. Genre diawali huruf kecil
-6. ID tidak ditemukan saat update/hapus
-7. ID tidak ditemukan saat cari
-8. Pilihan kolom/menu salah
-9. Daftar kosong saat menampilkan data
-
-#### 3. Folder `Java/` (Java)
-
-1. Input bukan angka (menu, ID, harga, durasi, jumlah genre, pilihan kolom)
-2. ID bukan angka mulai dari 1 (tambah/update/hapus/cari)
-3. ID sudah dipakai saat tambah
-4. Jumlah genre kurang dari 1
-5. Genre diawali huruf kecil
-6. ID tidak ditemukan saat update/hapus
-7. ID tidak ditemukan saat cari
-8. Pilihan kolom update bukan 1-5
-9. Pilihan menu bukan 1-6
-10. Daftar kosong saat menampilkan data
-
-
-#### 4. Folder `PHP/` (PHP)
-
-1. ID bukan angka mulai dari 1 (tambah/update)
-2. ID sudah dipakai saat tambah
-3. Harga/durasi bukan angka valid
-4. Genre tidak diawali huruf besar / kosong
-5. Gambar diisi URL (http/https/data:) atau kosong
-6. Update tanpa mencetang kolom
-7. ID tidak ditemukan saat update/hapus
-8. ID tidak ditemukan saat cari (via `?cari=`)
-9. Daftar kosong
-10. File gambar tidak ada di path
-
-
----
-
-
-## Dokumentasi
-
-Bukti penggunaan program (screenshot) ditempatkan di folder `Dokumentasi` sesuai bahasanya:
 
 
