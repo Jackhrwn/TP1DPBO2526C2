@@ -357,7 +357,6 @@ void tampilkanMenu() {
     cout << WARNA_RESET;                                  // reset warna
 }
 
-
 int main() {
     vector<Film> daftarFilm;            // buat vector kosong untuk menyimpan film
     int pilihan;                        // variabel pilihan menu
