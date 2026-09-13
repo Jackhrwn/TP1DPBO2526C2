@@ -1,0 +1,9 @@
+# Artefak hasil kompilasi C++
+*.exe
+
+# Artefak hasil kompilasi Java
+*.class
+
+# Cache Python
+__pycache__/
+*.pyc
