@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "bioskop.cpp"            // berisi definisi class Film saja
+#include "bioskop.cpp"            
 
 using namespace std;    // agar tidak perlu menulis std:: berulang kali            
 
@@ -35,13 +35,13 @@ void cetakBaris(string isi, int panjang) {
 
 // Fungsi cetakJudul: mencetak judul di tengah kotak dengan border
 void cetakJudul(string judul, int panjang) {
-    int kiri = (panjang - (int)judul.size()) / 2;   // hitung jarak spasi kiri
-    cout << WARNA_BIRU << "|" << WARNA_RESET;       // border kiri (biru)
-    cout << WARNA_KUNING;                           // judul (kuning)
-    for (int i = 0; i < kiri; i++) {                // spasi kiri
+    int kiri = (panjang - (int)judul.size()) / 2;       // hitung jarak spasi kiri
+    cout << WARNA_BIRU << "|" << WARNA_RESET;           // border kiri (biru)
+    cout << WARNA_KUNING;                               // judul (kuning)
+    for (int i = 0; i < kiri; i++) {                    // spasi kiri
         cout << " ";
     }
-    cout << judul;                                  // cetak judul
+    cout << judul;                                      // cetak judul
     for (int i = kiri + (int)judul.size(); i < panjang; i++) {  // spasi kanan
         cout << " ";
     }
@@ -107,7 +107,7 @@ void tambahData(vector<Film>& daftar) {
         cout << teksMerah("ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!\n") << endl; // pesan error
     }
     if (cekIdAda(daftar, id)) {                           // jika id sudah dipakai
-        cout << teksMerah("ID sudah digunakan!") << endl;            // beri tahu user
+        cout << teksMerah("ID sudah digunakan!") << endl; // beri tahu user
         return;                                           // kembali ke menu utama
     }
     cout << "Masukkan Judul   : ";                        // minta input judul
@@ -118,15 +118,15 @@ void tambahData(vector<Film>& daftar) {
         if (jumlahGenre >= 1) break;                      // jumlah benar (mulai dari 1)
         cout << teksMerah("Jumlah genre harus angka mulai dari 1!\n") << endl; // pesan error
     }
-    genre.clear();                                    // kosongkan list sebelum mengisi
-    for (int i = 0; i < jumlahGenre; i++) {           // minta genre satu per satu
-        while (true) {                                // ulangi sampai genre ini valid
-            cout << "Genre ke-" << (i + 1) << "       : ";  // minta genre ke-i
-            string g;                                 // variabel genre tunggal
-            getline(cin, g);                          // baca genre (boleh spasi)
+    genre.clear();                                        // kosongkan list sebelum mengisi
+    for (int i = 0; i < jumlahGenre; i++) {               // minta genre satu per satu
+        while (true) {                                    // ulangi sampai genre ini valid
+            cout << "Genre ke-" << (i + 1) << "       : ";// minta genre ke-i
+            string g;                                     // variabel genre tunggal
+            getline(cin, g);                              // baca genre (boleh spasi)
             if (!g.empty() && isupper((unsigned char)g[0])) {  // jika awal huruf besar
-                genre.push_back(g);                   // simpan genre
-                break;                                // lanjut ke genre berikutnya
+                genre.push_back(g);                       // simpan genre
+                break;                                    // lanjut ke genre berikutnya
             }
             cout << teksMerah("Genre harus diawali dengan huruf besar (contoh: Action)!\n") << endl; // pesan error
         }
@@ -200,83 +200,83 @@ void updateData(vector<Film>& daftar) {
     }
 
     // cari index film sasaran (perulangan dijalankan sampai selesai, tanpa break)
-    int idxSasaran = -1;                                  // index sasaran (default belum ketemu)
-    for (int i = 0; i < daftar.size(); i++) {             // ulangi semua elemen daftar
-        if (daftar[i].getId() == id) {                    // jika id cocok dengan sasaran
-            idxSasaran = i;                               // simpan index sasaran
+    int idxSasaran = -1;                                              // index sasaran (default belum ketemu)
+    for (int i = 0; i < daftar.size(); i++) {                         // ulangi semua elemen daftar
+        if (daftar[i].getId() == id) {                                // jika id cocok dengan sasaran
+            idxSasaran = i;                                           // simpan index sasaran
         }
     }
 
-    if (idxSasaran == -1) {                               // jika tidak ada yang cocok
-        cout << teksMerah("ID tidak ditemukan!") << endl; // beri tahu user
-        return;                                           // kembali ke menu utama
+    if (idxSasaran == -1) {                                           // jika tidak ada yang cocok
+        cout << teksMerah("ID tidak ditemukan!") << endl;             // beri tahu user
+        return;                                                       // kembali ke menu utama
     }
 
-    int pilihan;                                          // variabel pilihan kolom
-    do {                                                  // ulangi sampai pilih selesai
+    int pilihan;                                                      // variabel pilihan kolom
+    do {                                                              // ulangi sampai pilih selesai
         // tampilkan data saat ini milik film yang dicari
         cout << "\nData film saat ini:\n" << endl;
-        daftar[idxSasaran].tampilkan();                   // tampilkan detail film sasaran
+        daftar[idxSasaran].tampilkan();                               // tampilkan detail film sasaran
 
         // tampilkan submenu pilihan kolom yang mau diupdate
         tampilkanMenuUpdate();
-        pilihan = inputAngka("Pilih kolom (1-5) : ");     // baca pilihan kolom
+        pilihan = inputAngka("Pilih kolom (1-5) : ");                 // baca pilihan kolom
 
-        switch (pilihan) {                                // jalankan sesuai pilihan
-        case 1: {                                         // ubah judul
-            string judulBaru;                             // variabel judul baru
-            cout << "Judul baru        : ";                      // minta input judul baru
-            getline(cin, judulBaru);                      // baca judul baru
-            daftar[idxSasaran].setJudul(judulBaru);       // ubah judul lewat setter
-            cout << teksHijau("Judul berhasil diubah!") << endl;     // konfirmasi sukses
-            break;                                        // keluar dari switch
+        switch (pilihan) {                                            // jalankan sesuai pilihan
+        case 1: {                                                     // ubah judul
+            string judulBaru;                                         // variabel judul baru
+            cout << "Judul baru        : ";                           // minta input judul baru
+            getline(cin, judulBaru);                                  // baca judul baru
+            daftar[idxSasaran].setJudul(judulBaru);                   // ubah judul lewat setter
+            cout << teksHijau("Judul berhasil diubah!") << endl;      // konfirmasi sukses
+            break;                                                    // keluar dari switch
         }
-        case 2: {                                         // ubah genre
-            int jumlahGenre;                              // banyaknya genre baru
-            while (true) {                                // ulangi sampai jumlah benar
-                jumlahGenre = inputAngka("Jumlah Genre      : ");  // minta jumlah genre
-                if (jumlahGenre >= 1) break;              // jumlah benar (mulai dari 1)
+        case 2: {                                                     // ubah genre
+            int jumlahGenre;                                          // banyaknya genre baru
+            while (true) {                                            // ulangi sampai jumlah benar
+                jumlahGenre = inputAngka("Jumlah Genre      : ");     // minta jumlah genre
+                if (jumlahGenre >= 1) break;                          // jumlah benar (mulai dari 1)
                 cout << teksMerah("Jumlah genre harus angka mulai dari 1!\n") << endl; // pesan error
             }
-            vector<string> genreBaru;                     // list genre baru
-            genreBaru.clear();                            // kosongkan list sebelum mengisi
-            for (int i = 0; i < jumlahGenre; i++) {       // minta genre satu per satu
-                while (true) {                            // ulangi sampai genre ini valid
-                    cout << "Genre ke-" << (i + 1) << "        : ";  // minta genre ke-i
-                    string g;                             // variabel genre tunggal
-                    getline(cin, g);                      // baca genre (boleh spasi)
-                    if (!g.empty() && isupper((unsigned char)g[0])) {  // jika awal huruf besar
-                        genreBaru.push_back(g);           // simpan genre
-                        break;                            // lanjut ke genre berikutnya
+            vector<string> genreBaru;                                 // list genre baru
+            genreBaru.clear();                                        // kosongkan list sebelum mengisi
+            for (int i = 0; i < jumlahGenre; i++) {                   // minta genre satu per satu
+                while (true) {                                        // ulangi sampai genre ini valid
+                    cout << "Genre ke-" << (i + 1) << "        : ";   // minta genre ke-i
+                    string g;                                         // variabel genre tunggal
+                    getline(cin, g);                                  // baca genre (boleh spasi)
+                    if (!g.empty() && isupper((unsigned char)g[0])) { // jika awal huruf besar
+                        genreBaru.push_back(g);                       // simpan genre
+                        break;                                        // lanjut ke genre berikutnya
                     }
                     cout << teksMerah("Genre harus diawali dengan huruf besar (contoh: Action)!'\n") << endl; // pesan error
                 }
             }
-            daftar[idxSasaran].setGenre(genreBaru);       // ubah genre lewat setter
-            cout << teksHijau("Genre berhasil diubah!") << endl;     // konfirmasi sukses
-            break;                                        // keluar dari switch
+            daftar[idxSasaran].setGenre(genreBaru);                   // ubah genre lewat setter
+            cout << teksHijau("Genre berhasil diubah!") << endl;      // konfirmasi sukses
+            break;                                                    // keluar dari switch
         }
-        case 3: {                                         // ubah harga
-            int hargaBaru;                                // variabel harga baru
-            hargaBaru = inputAngka("Harga baru        : ");  // baca harga baru
-            daftar[idxSasaran].setHarga(hargaBaru);       // ubah harga lewat setter
-            cout << teksHijau("Harga berhasil diubah!") << endl;     // konfirmasi sukses
-            break;                                        // keluar dari switch
+        case 3: {                                                     // ubah harga
+            int hargaBaru;                                            // variabel harga baru
+            hargaBaru = inputAngka("Harga baru        : ");           // baca harga baru
+            daftar[idxSasaran].setHarga(hargaBaru);                   // ubah harga lewat setter
+            cout << teksHijau("Harga berhasil diubah!") << endl;      // konfirmasi sukses
+            break;                                                    // keluar dari switch
         }
-        case 4: {                                         // ubah durasi
-            int durasiBaru;                               // variabel durasi baru
-            durasiBaru = inputAngka("Durasi baru(menit): ");        // baca durasi baru
-            daftar[idxSasaran].setDurasi(durasiBaru);     // ubah durasi lewat setter
-            cout << teksHijau("Durasi berhasil diubah!") << endl;    // konfirmasi sukses
-            break;                                        // keluar dari switch
+        case 4: {                                                     // ubah durasi
+            int durasiBaru;                                           // variabel durasi baru
+            durasiBaru = inputAngka("Durasi baru(menit): ");          // baca durasi baru
+            daftar[idxSasaran].setDurasi(durasiBaru);                 // ubah durasi lewat setter
+            cout << teksHijau("Durasi berhasil diubah!") << endl;     // konfirmasi sukses
+            break;                                                    // keluar dari switch
         }
-        case 5:                                           // selesai update
-            cout << teksHijau("Update selesai.") << endl;            // pesan selesai
-            break;                                        // keluar dari switch
-        default:                                          // pilihan tidak valid
-            cout << teksMerah("Pilihan tidak valid!") << endl;       // pesan salah
+        case 5:                                                       // selesai update
+            cout << teksHijau("Update selesai.") << endl;             // pesan selesai
+            break;                                                    // keluar dari switch
+        default:                                                      // pilihan tidak valid
+            cout << teksMerah("Pilihan tidak valid!") << endl;        // pesan salah
         }
-    } while (pilihan != 5);                               // ulangi selama belum selesai
+    } while (pilihan != 5);                                           // ulangi selama belum selesai
 }
 
 // Fungsi hapusData: menghapus objek Film dari daftar berdasarkan id lalu simpan ke file
@@ -364,7 +364,7 @@ int main() {
 
     do {                                // ulangi tampilan menu
         tampilkanMenu();                // tampilkan daftar menu
-        pilihan = inputAngka("Pilih menu (1-6) : ");         // baca pilihan dengan error handling
+        pilihan = inputAngka("Pilih menu (1-6) : ");      // baca pilihan dengan error handling
 
         switch (pilihan) {              // pilih aksi berdasarkan angka pilihan
         case 1:                         // jika memilih 1
