@@ -67,8 +67,7 @@ function formatDurasi($menit) {
     return $menit . " menit";                // kembali ke format menit
 }
 
-// Fungsi cekGambarValid: memeriksa apakah path gambar berupa file lokal (BUKAN URL),
-// karena tugas mensyaratkan gambar disimpan di local (bukan disimpan sebagai url/url gambar online)
+// Fungsi cekGambarValid: memeriksa apakah path gambar berupa file lokal (BUKAN URL)
 function cekGambarValid($path) {
     if (!isset($path) || trim($path) === '') {       // kosong => tidak valid
         return false;
@@ -100,7 +99,7 @@ function tampilGambar($path, $maxW = 80, $maxH = 110) {
     return '<img src="' . htmlspecialchars($path) . '" width="' . $lebar . '" height="' . $tinggi . '" style="border-radius:6px;display:block;" alt="Poster">';
 }
 
-// Fungsi validasiAngka: memeriksa apakah input berupa angka (ERROR HANDLING)
+// Fungsi validasiAngka: memeriksa apakah input berupa angka 
 // mengembalikan true jika angkanya valid, false jika berupa string
 function validasiAngka($nilai) {
     if (!isset($nilai) || $nilai === '' || !is_numeric($nilai) || $nilai < 0) {
@@ -133,10 +132,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $genreInput = !empty($_POST['genre']) ? array_map('trim', explode(',', $_POST['genre'])) : [];
         // simpan sementara input user agar form dapat terisi ulang jika ada error
         $_SESSION['form_backup'] = $_POST;
-        if (!cekIdValid($id)) {                    // jika id bukan angka mulai dari 1
+        if (!cekIdValid($id)) {                      // jika id bukan angka mulai dari 1
             setFlash("ID harus berupa angka mulai dari 1 (1, 2, 3, ...)!");  // pesan error validasi id
         } elseif (cekIdAda((int)$id)) {              // jika id sudah dipakai
-            setFlash("ID sudah digunakan!");          // tampilkan pesan error id
+            setFlash("ID sudah digunakan!");         // tampilkan pesan error id
         } elseif (!validasiAngka($_POST['harga']) || !validasiAngka($_POST['durasi'])) {   // jika harga/durasi bukan angka
             setFlash("Harga dan durasi harus berupa angka yang valid!");  // tampilkan pesan error
         } elseif (!validasiGenre($genreInput)) {     // jika ada genre yang diawali huruf kecil
@@ -153,8 +152,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 (int)$_POST['durasi'],     // isi durasi
                 trim($_POST['gambar'])     // isi path gambar lokal
             );
-            $_SESSION['daftar_film'][] = $film;   // simpan objek ke dalam session
-            unset($_SESSION['form_backup']);      // data berhasil, bersihkan cadangan form
+            $_SESSION['daftar_film'][] = $film;      // simpan objek ke dalam session
+            unset($_SESSION['form_backup']);         // data berhasil, bersihkan cadangan form
             setFlash("Data berhasil ditambahkan!");  // pesan sukses
         }
         // redirect agar saat halaman di-reload, pesan tidak muncul lagi dan data tidak terkirim ulang
@@ -260,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     // jika aksinya reset (hapus semua data)
     elseif ($aksi === 'reset') {
-        $_SESSION['daftar_film'] = [];   // kosongkan seluruh data
+        $_SESSION['daftar_film'] = [];    // kosongkan seluruh data
         setFlash("Semua data dihapus!");  // pesan sukses
         // redirect agar saat halaman di-reload, pesan tidak muncul lagi
         header("Location: index.php");
@@ -559,152 +558,157 @@ if (isset($_GET['cari'])) {
             border-radius: 20px;
         }
         .reset-wrap { text-align: right; margin-top: 18px; }
+        .footer { text-align: center; margin-top: 30px; padding: 18px 15px; color: #8892b0; font-size: 14px; }
     </style>
 </head>
 <body>
-<div class="container">   <!-- pembungkus halaman utama -->
+    <div class="container">   <!-- pembungkus halaman utama -->
 
-    <!-- header halaman dengan judul menarik -->
-    <div class="header">
-        <h1><span class="icon-film">🎬</span> MANAJEMEN DATA BIOSKOP</h1>
-        <p>Kelola data film favoritmu dengan fitur: tambah, tampilkan, update, hapus, dan cari.</p>
-    </div>
+        <!-- header halaman -->
+        <div class="header">
+            <h1><span class="icon-film">🎬</span> MANAJEMEN DATA BIOSKOP</h1>
+            <p>Kelola data film favoritmu dengan fitur: tambah, tampilkan, update, hapus, dan cari.</p>
+        </div>
 
-    <?php if ($pesan): ?>   <!-- jika ada pesan -->
-        <?php $isError = preg_match('/(tidak|harus|sudah digunakan|minimal)/', $pesan); ?>
-        <!-- tampilkan pesan notifikasi (sukses/error) -->
-        <div class="pesan <?php echo $isError ? 'pesan-error' : 'pesan-sukses'; ?>"><?php echo $pesan; ?></div>
-    <?php endif; ?>
+        <?php if ($pesan): ?>   <!-- jika ada pesan -->
+            <?php $isError = preg_match('/(tidak|harus|sudah digunakan|minimal)/', $pesan); ?>
+            <!-- tampilkan pesan notifikasi (sukses/error) -->
+            <div class="pesan <?php echo $isError ? 'pesan-error' : 'pesan-sukses'; ?>"><?php echo $pesan; ?></div>
+        <?php endif; ?>
 
-<?php if ($filmCari): ?>   <!-- jika ada hasil pencarian -->
-        <div class="hasil-cari">   <!-- kotak hasil pencarian -->
-            <div class="hc-judul">🔎 Hasil Pencarian ID <b>"<?php echo $filmCari->getId(); ?>"</b></div>
-            <div class="hc-body">
-                <div class="hc-gambar">
-                    <?php echo tampilGambar($filmCari->getGambar(), 200, 260); ?>
-                </div>
-                <div class="hc-info">
-                    <div class="hc-item"><span class="hc-label">Judul</span><span class="hc-colon">:</span><span class="hc-value"><?php echo $filmCari->getJudul(); ?></span></div>
-                    <div class="hc-item"><span class="hc-label">Genre</span><span class="hc-colon">:</span><span class="hc-value"><?php echo $filmCari->getGenreText(); ?></span></div>
-                    <div class="hc-item"><span class="hc-label">Harga Tiket</span><span class="hc-colon">:</span><span class="hc-value">Rp <?php echo number_format($filmCari->getHarga(), 0, ',', '.'); ?></span></div>
-                    <div class="hc-item"><span class="hc-label">Durasi Film</span><span class="hc-colon">:</span><span class="hc-value"><?php echo formatDurasi($filmCari->getDurasi()); ?></span></div>
+        <?php if ($filmCari): ?>   <!-- jika ada hasil pencarian -->
+            <div class="hasil-cari">   <!-- kotak hasil pencarian -->
+                <div class="hc-judul">🔎 Hasil Pencarian ID <b>"<?php echo $filmCari->getId(); ?>"</b></div>
+                <div class="hc-body">
+                    <div class="hc-gambar">
+                        <?php echo tampilGambar($filmCari->getGambar(), 200, 260); ?>
+                    </div>
+                    <div class="hc-info">
+                        <div class="hc-item"><span class="hc-label">Judul</span><span class="hc-colon">:</span><span class="hc-value"><?php echo $filmCari->getJudul(); ?></span></div>
+                        <div class="hc-item"><span class="hc-label">Genre</span><span class="hc-colon">:</span><span class="hc-value"><?php echo $filmCari->getGenreText(); ?></span></div>
+                        <div class="hc-item"><span class="hc-label">Harga Tiket</span><span class="hc-colon">:</span><span class="hc-value">Rp <?php echo number_format($filmCari->getHarga(), 0, ',', '.'); ?></span></div>
+                        <div class="hc-item"><span class="hc-label">Durasi Film</span><span class="hc-colon">:</span><span class="hc-value"><?php echo formatDurasi($filmCari->getDurasi()); ?></span></div>
+                    </div>
                 </div>
             </div>
-        </div>
-    <?php endif; ?>
+        <?php endif; ?>
 
-    <div class="grid">   <!-- grid dua kolom untuk form input + pencarian -->
+        <div class="grid">   <!-- grid dua kolom untuk form input + pencarian -->
 
-        <!-- form input / update data film -->
-        <div class="card">
-            <h2><?php echo $filmEdit ? '✏️ Update Data Film' : '➕ Tambah Data Film'; ?></h2>
-
-            <?php if ($filmEdit): ?>   <!-- jika sedang mode update -->
-                <!-- info data film saat ini -->
-                <p style="font-size:14px;color:#666;margin-bottom:10px;">
-                    Saat ini anda mengedit film <b style="color:#e94560;"><?php echo $filmEdit->getId(); ?></b>.
-                    Centang kolom yang ingin diubah.
-                </p>
-            <?php endif; ?>
-
-            <form method="POST">   <!-- form input data film -->
-                <input type="hidden" name="aksi" value="<?php echo $filmEdit ? 'update' : 'tambah'; ?>">  <!-- aksi form -->
-                <label class="label-field">ID</label>
-                <input type="number" name="id" value="<?php echo $filmEdit ? $filmEdit->getId() : (isset($formData['id']) ? (int)$formData['id'] : ''); ?>" placeholder="1" min="1" <?php echo $filmEdit ? 'readonly' : ''; ?> required>
-                <label class="label-field">Judul</label>
-                <input type="text" name="judul" value="<?php echo $filmEdit ? htmlspecialchars($filmEdit->getJudul()) : (isset($formData['judul']) ? htmlspecialchars($formData['judul']) : ''); ?>" placeholder="Judul Film" <?php echo $filmEdit ? '' : 'required'; ?>>
-                <label class="label-field">Genre</label>
-                <input type="text" name="genre" value="<?php echo $filmEdit ? htmlspecialchars($filmEdit->getGenreText()) : (isset($formData['genre']) ? htmlspecialchars($formData['genre']) : ''); ?>" placeholder="Action, Drama, ..." <?php echo $filmEdit ? '' : 'required'; ?>>
-                <label class="label-field">Harga</label>
-                <input type="number" name="harga" value="<?php echo $filmEdit ? $filmEdit->getHarga() : (isset($formData['harga']) ? (int)$formData['harga'] : ''); ?>" placeholder="50000" <?php echo $filmEdit ? '' : 'required'; ?>>
-                <label class="label-field">Durasi (Menit)</label>
-                <input type="number" name="durasi" value="<?php echo $filmEdit ? $filmEdit->getDurasi() : (isset($formData['durasi']) ? (int)$formData['durasi'] : ''); ?>" placeholder="Contoh: 120" <?php echo $filmEdit ? '' : 'required'; ?>>
-                <label class="label-field">Gambar (Path Lokal)</label>
-                <input type="text" name="gambar" value="<?php echo $filmEdit ? htmlspecialchars($filmEdit->getGambar()) : (isset($formData['gambar']) ? htmlspecialchars($formData['gambar']) : ''); ?>" placeholder="Contoh: gambar/AOT.jpg" <?php echo $filmEdit ? '' : 'required'; ?>>
-                <p style="font-size:12px;color:#888;margin-top:4px;">Masukkan path file gambar lokal (contoh: <b>gambar/AOT.jpg</b>), bukan URL internet.</p>
+            <!-- form input / update data film -->
+            <div class="card">
+                <h2><?php echo $filmEdit ? '✏️ Update Data Film' : '➕ Tambah Data Film'; ?></h2>
 
                 <?php if ($filmEdit): ?>   <!-- jika sedang mode update -->
-                    <!-- pilihan kolom yang mau diupdate (centang sesuai yang diinginkan) -->
-                    <div class="kolom-update">
-                        <div class="judul-kolom">Pilih kolom yang ingin diupdate:</div>
-                        <label class="checkbox-label"><input type="checkbox" name="kolom[]" value="judul" checked> Judul</label>
-                        <label class="checkbox-label"><input type="checkbox" name="kolom[]" value="genre" checked> Genre</label>
-                        <label class="checkbox-label"><input type="checkbox" name="kolom[]" value="harga" checked> Harga</label>
-                        <label class="checkbox-label"><input type="checkbox" name="kolom[]" value="durasi" checked> Durasi</label>
-                        <label class="checkbox-label"><input type="checkbox" name="kolom[]" value="gambar" checked> Gambar</label>
-                    </div>
+                    <!-- info data film saat ini -->
+                    <p style="font-size:14px;color:#666;margin-bottom:10px;">
+                        Saat ini anda mengedit film <b style="color:#e94560;"><?php echo $filmEdit->getId(); ?></b>.
+                        Centang kolom yang ingin diubah.
+                    </p>
                 <?php endif; ?>
 
-                <!-- tombol submit -->
-                <button type="submit" class="btn <?php echo $filmEdit ? 'btn-simpan' : 'btn-tambah'; ?>">
-                    <?php echo $filmEdit ? '💾 Simpan Perubahan' : '🚀 Tambah Film'; ?>
-                </button>
-                <?php if ($filmEdit): ?>   <!-- saat mode edit, sediakan tombol keluar dari mode mengedit -->
-                    <!-- link keluar mode edit (tanpa menyimpan perubahan) -->
-                    <a href="index.php" class="btn btn-batal">❌ Batal / Keluar dari Mode Edit</a>
-                <?php endif; ?>
-            </form>
-        </div>
+                <form method="POST">   <!-- form input data film -->
+                    <input type="hidden" name="aksi" value="<?php echo $filmEdit ? 'update' : 'tambah'; ?>">  <!-- aksi form -->
+                    <label class="label-field">ID</label>
+                    <input type="number" name="id" value="<?php echo $filmEdit ? $filmEdit->getId() : (isset($formData['id']) ? (int)$formData['id'] : ''); ?>" placeholder="1" min="1" <?php echo $filmEdit ? 'readonly' : ''; ?> required>
+                    <label class="label-field">Judul</label>
+                    <input type="text" name="judul" value="<?php echo $filmEdit ? htmlspecialchars($filmEdit->getJudul()) : (isset($formData['judul']) ? htmlspecialchars($formData['judul']) : ''); ?>" placeholder="Judul Film" <?php echo $filmEdit ? '' : 'required'; ?>>
+                    <label class="label-field">Genre</label>
+                    <input type="text" name="genre" value="<?php echo $filmEdit ? htmlspecialchars($filmEdit->getGenreText()) : (isset($formData['genre']) ? htmlspecialchars($formData['genre']) : ''); ?>" placeholder="Action, Drama, ..." <?php echo $filmEdit ? '' : 'required'; ?>>
+                    <label class="label-field">Harga</label>
+                    <input type="number" name="harga" value="<?php echo $filmEdit ? $filmEdit->getHarga() : (isset($formData['harga']) ? (int)$formData['harga'] : ''); ?>" placeholder="50000" <?php echo $filmEdit ? '' : 'required'; ?>>
+                    <label class="label-field">Durasi (Menit)</label>
+                    <input type="number" name="durasi" value="<?php echo $filmEdit ? $filmEdit->getDurasi() : (isset($formData['durasi']) ? (int)$formData['durasi'] : ''); ?>" placeholder="Contoh: 120" <?php echo $filmEdit ? '' : 'required'; ?>>
+                    <label class="label-field">Gambar (Path Lokal)</label>
+                    <input type="text" name="gambar" value="<?php echo $filmEdit ? htmlspecialchars($filmEdit->getGambar()) : (isset($formData['gambar']) ? htmlspecialchars($formData['gambar']) : ''); ?>" placeholder="Contoh: gambar/AOT.jpg" <?php echo $filmEdit ? '' : 'required'; ?>>
+                    <p style="font-size:12px;color:#888;margin-top:4px;">Masukkan path file gambar lokal (contoh: <b>gambar/AOT.jpg</b>), bukan URL internet.</p>
 
-        <!-- form pencarian data film -->
-        <div class="card">
-            <h2>🔍 Cari Data Film</h2>
-            <form method="GET">   <!-- form pencarian film -->
-                <label class="label-field">ID</label>
-                <input type="number" name="cari" value="<?php echo isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : (isset($cariBackup) ? htmlspecialchars($cariBackup) : ''); ?>" placeholder="Masukkan ID film (1, 2, 3, ...)" min="1">
-                <button type="submit" class="btn btn-cari">Cari Film</button>
-            </form>
-        </div>
-    </div>
+                    <?php if ($filmEdit): ?>   <!-- jika sedang mode update -->
+                        <!-- pilihan kolom yang mau diupdate (centang sesuai yang diinginkan) -->
+                        <div class="kolom-update">
+                            <div class="judul-kolom">Pilih kolom yang ingin diupdate:</div>
+                            <label class="checkbox-label"><input type="checkbox" name="kolom[]" value="judul" checked> Judul</label>
+                            <label class="checkbox-label"><input type="checkbox" name="kolom[]" value="genre" checked> Genre</label>
+                            <label class="checkbox-label"><input type="checkbox" name="kolom[]" value="harga" checked> Harga</label>
+                            <label class="checkbox-label"><input type="checkbox" name="kolom[]" value="durasi" checked> Durasi</label>
+                            <label class="checkbox-label"><input type="checkbox" name="kolom[]" value="gambar" checked> Gambar</label>
+                        </div>
+                    <?php endif; ?>
 
-    <!-- daftar film dalam bentuk kartu -->
-    <div class="list-head">
-        <h2 style="font-size:20px;font-weight:700;">🗂️ Daftar Film</h2>
-        <span class="count"><?php echo count($_SESSION['daftar_film']); ?> film</span>
-    </div>
-
-    <div class="film-grid">
-        <?php if (count($_SESSION['daftar_film']) === 0): ?>   <!-- jika daftar kosong -->
-            <div class="film-kosong">🎬 Belum ada data film. Silakan tambahkan terlebih dahulu.</div>
-        <?php else: ?>
-            <?php // urutkan daftar berdasarkan id (ascending) sebelum ditampilkan
-            usort($_SESSION['daftar_film'], function ($a, $b) { return $a->getId() <=> $b->getId(); });
-            foreach ($_SESSION['daftar_film'] as $film): ?>
-            <div class="film-card">
-                <div class="film-poster">
-                    <?php echo tampilGambar($film->getGambar(), 220, 260); ?>
-                </div>
-                <div class="film-info">
-                    <div class="film-id">ID ~ <?php echo $film->getId(); ?></div>
-                    <div class="film-judul"><?php echo htmlspecialchars($film->getJudul()); ?></div>
-                    <div class="film-genre">
-                        <?php foreach ($film->getGenre() as $g): ?>
-                            <span class="tag"><?php echo htmlspecialchars($g); ?></span>
-                        <?php endforeach; ?>
-                    </div>
-                    <div class="film-harga">Rp <?php echo number_format($film->getHarga(), 0, ',', '.'); ?></div>
-                    <div class="film-durasi">⏱ <?php echo formatDurasi($film->getDurasi()); ?></div>
-                </div>
-                <div class="film-aksi">
-                    <a href="?edit=<?php echo $film->getId(); ?>" class="btn btn-edit">✏️ Edit</a>
-                    <form method="POST" onsubmit="return confirm('Hapus film ini?');">
-                        <input type="hidden" name="aksi" value="hapus">
-                        <input type="hidden" name="id" value="<?php echo $film->getId(); ?>">
-                        <button type="submit" class="btn btn-hapus">🗑️ Hapus</button>
-                    </form>
-                </div>
+                    <!-- tombol submit -->
+                    <button type="submit" class="btn <?php echo $filmEdit ? 'btn-simpan' : 'btn-tambah'; ?>">
+                        <?php echo $filmEdit ? '💾 Simpan Perubahan' : '🚀 Tambah Film'; ?>
+                    </button>
+                    <?php if ($filmEdit): ?>   <!-- saat mode edit, ada tombol keluar dari mode mengedit -->
+                        <!-- link keluar mode edit -->
+                        <a href="index.php" class="btn btn-batal">❌ Batal / Keluar dari Mode Edit</a>
+                    <?php endif; ?>
+                </form>
             </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+
+            <!-- form pencarian data film -->
+            <div class="card">
+                <h2>🔍 Cari Data Film</h2>
+                <form method="GET">   <!-- form pencarian film -->
+                    <label class="label-field">ID</label>
+                    <input type="number" name="cari" value="<?php echo isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : (isset($cariBackup) ? htmlspecialchars($cariBackup) : ''); ?>" placeholder="Masukkan ID film (1, 2, 3, ...)" min="1">
+                    <button type="submit" class="btn btn-cari">Cari Film</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- daftar film dalam bentuk kartu -->
+        <div class="list-head">
+            <h2 style="font-size:20px;font-weight:700;">🗂️ Daftar Film</h2>
+            <span class="count"><?php echo count($_SESSION['daftar_film']); ?> film</span>
+        </div>
+
+        <div class="film-grid">
+            <?php if (count($_SESSION['daftar_film']) === 0): ?>   <!-- jika daftar kosong -->
+                <div class="film-kosong">🎬 Belum ada data film. Silakan tambahkan terlebih dahulu.</div>
+            <?php else: ?>
+                <?php // urutkan daftar berdasarkan id (ascending) sebelum ditampilkan
+                usort($_SESSION['daftar_film'], function ($a, $b) { return $a->getId() <=> $b->getId(); });
+                foreach ($_SESSION['daftar_film'] as $film): ?>
+                <div class="film-card">
+                    <div class="film-poster">
+                        <?php echo tampilGambar($film->getGambar(), 220, 260); ?>
+                    </div>
+                    <div class="film-info">
+                        <div class="film-id">ID ~ <?php echo $film->getId(); ?></div>
+                        <div class="film-judul"><?php echo htmlspecialchars($film->getJudul()); ?></div>
+                        <div class="film-genre">
+                            <?php foreach ($film->getGenre() as $g): ?>
+                                <span class="tag"><?php echo htmlspecialchars($g); ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="film-harga">Rp <?php echo number_format($film->getHarga(), 0, ',', '.'); ?></div>
+                        <div class="film-durasi">⏱ <?php echo formatDurasi($film->getDurasi()); ?></div>
+                    </div>
+                    <div class="film-aksi">
+                        <a href="?edit=<?php echo $film->getId(); ?>" class="btn btn-edit">✏️ Edit</a>
+                        <form method="POST" onsubmit="return confirm('Hapus film ini?');">
+                            <input type="hidden" name="aksi" value="hapus">
+                            <input type="hidden" name="id" value="<?php echo $film->getId(); ?>">
+                            <button type="submit" class="btn btn-hapus">🗑️ Hapus</button>
+                        </form>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+        <div class="reset-wrap">
+            <!-- form untuk menghapus semua data -->
+            <form method="POST" onsubmit="return confirm('Hapus semua data?');">
+                <input type="hidden" name="aksi" value="reset">   <!-- aksi reset -->
+                <button type="submit" class="btn btn-reset">🗑️ Reset Semua Data</button>  <!-- tombol reset -->
+            </form>
+        </div>
     </div>
 
-    <div class="reset-wrap">
-        <!-- form untuk menghapus semua data -->
-        <form method="POST" onsubmit="return confirm('Hapus semua data?');">
-            <input type="hidden" name="aksi" value="reset">   <!-- aksi reset -->
-            <button type="submit" class="btn btn-reset">🗑️ Reset Semua Data</button>  <!-- tombol reset -->
-        </form>
-    </div>
-</div>
+    <footer class="footer">
+        Jaka Permana Herawan-TP1
+    </footer>
 </body>
 </html>
