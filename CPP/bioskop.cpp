@@ -45,6 +45,7 @@ class Film {
             }
             return hasil;                                // kembalikan string gabungan
         }
+
         // Getter harga: mengambil nilai harga
         int getHarga() { return harga; }
         // Getter durasi: mengambil nilai durasi
