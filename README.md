@@ -1,16 +1,16 @@
-# Manajemen Bioskop
+# 🎬 Manajemen Bioskop
 
 Program sederhana untuk mengelola data film di sebuah bioskop menggunakan konsep **Object-Oriented Programming (OOP)**. Program dibuat dalam **4 bahasa pemrograman**: **C++**, **Python**, **Java**, dan **PHP**.
 
 ---
 
-## Janji
+## ❤️ Janji
 
 Saya Jaka Permana Herawan dengan NIM 2509371 mengerjakan Tugas Praktikum 1 pada Mata Kuliah Desain dan Pemrograman Berorientasi Objek (DPBO) untuk keberkahan-Nya maka saya tidak melakukan kecurangan seperti yang telah dispesifikasikan. Aamiin
 
 ---
 
-## Desain dan Alur Kode
+## 🎨 Desain dan Alur Kode
 
 ### Class: `Film`
 
@@ -37,7 +37,7 @@ Keterangan atribut:
 Seluruh atribut dibuat **private** dan dilengkapi **getter/setter** sehingga mengakses/mengubah nilai hanya lewat method.
 
 
-## Struktur Folder
+## 📁 Struktur Folder
 
 ```
 .
@@ -65,7 +65,7 @@ Seluruh atribut dibuat **private** dan dilengkapi **getter/setter** sehingga men
 └── Readme.md
 ```
 
-### Penyimpanan Data
+### 💾 Penyimpanan Data
 
 Data dikelola dalam **array/list of object** (tanpa database, data hanya di memori/run-time):
 
@@ -77,7 +77,7 @@ Data dikelola dalam **array/list of object** (tanpa database, data hanya di memo
 | PHP | `$_SESSION['daftar_film']` (session) | objek `Film` |
 
 
-### Fungsi Utama
+### ✨ Fungsi Utama
 
 1. **Tambah data** — membaca input (ID, judul, genre, harga, durasi). Memeriksa ID berupa angka mulai dari 1 dan ID belum dipakai, lalu `push_back` / `add` / `append` objek ke list.
 2. **Tampilkan data** — jika list kosong tampilkan pesan; jika tidak, iterasi seluruh objek dimulai degan ID 1. Durasi ≥ 60 menit ditampilkan dalam format jam (misal `135 menit` → `2 jam 15 menit`).
@@ -86,3 +86,13 @@ Data dikelola dalam **array/list of object** (tanpa database, data hanya di memo
 5. **Cari data** — mencari objek berdasarkan ID; jika ketemu tampilkan detailnya, jika tidak tampilkan pesan "tidak ditemukan".
 
 ---
+
+## 📷 Dokumentasi Menu
+
+### Tampilan Menu CPP, Java dan Python
+
+![menu terminal](Dokumentasi/CPP/Tampilan%20Menu.png)
+
+### Tampilan Menu PHP
+
+![menu website](Dokumentasi/PHP/Tampilan%20Menu.png)
