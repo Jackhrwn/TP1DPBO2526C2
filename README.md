@@ -58,9 +58,10 @@ Seluruh atribut dibuat **private** dan dilengkapi **getter/setter** sehingga men
 │       └── kimi no nawa.jpg (contoh gambar poster2)
 ├── Dokumentasi (Untuk error handling di README.md)/
 │   ├── CPP/          (screenshot output C++)
-│   ├── Python/       (screenshot output Python)
+│   ├── ERROR HANDLING(screenshot output error handling)
 │   ├── Java/         (screenshot output Java)
-│   └── PHP/          (screenshot output PHP)
+│   ├── PHP/          (screenshot output PHP)
+|   └── Python/       (screenshot output Python)
 └── Readme.md
 ```
 
