@@ -66,7 +66,7 @@ def cek_id_valid(id):
 def cek_id_ada(daftar, id):
     ketemu = False               # penanda hasil pencarian
     for film in daftar:          # ulangi semua objek dalam daftar
-        if film.id == id:        # jika id objek sama dengan id yang dicari
+        if film.get_id() == id:  # jika id objek sama dengan id yang dicari
             ketemu = True        # tandai ketemu 
     return ketemu                # kembalikan hasil
 
@@ -135,7 +135,7 @@ def tampilkan_data(daftar):
     print(RESET, end="")
     print()
     # urutkan daftar berdasarkan id (ascending) sebelum ditampilkan
-    daftar.sort(key=lambda f: f.id)
+    daftar.sort(key=lambda f: f.get_id())
     # ulangi semua objek dalam daftar
     for i, film in enumerate(daftar):
         # tampilkan nomor urut film
@@ -179,7 +179,7 @@ def update_data(daftar):
     film_target = None   # objek sasaran (default belum ketemu)
     for film in daftar:
         # jika id objek cocok dengan id sasaran
-        if film.id == id:
+        if film.get_id() == id:
             # simpan objek sasaran
             film_target = film
 
@@ -205,7 +205,7 @@ def update_data(daftar):
         if pilihan == 1:
             # ubah judul
             judul_baru = input("Judul baru        : ")
-            film_target.judul = judul_baru
+            film_target.set_judul(judul_baru)
             # konfirmasi judul berhasil diubah
             print(teks_hijau("Judul berhasil diubah!"))
         elif pilihan == 2:
@@ -226,19 +226,19 @@ def update_data(daftar):
                         break
                     # pesan error lalu ulangi minta input genre yang sama
                     print(teks_merah("Genre harus diawali dengan huruf besar (contoh: Action)!\n"))
-            film_target.genre = genre_baru
+            film_target.set_genre(genre_baru)
             # konfirmasi genre berhasil diubah
             print(teks_hijau("Genre berhasil diubah!"))
         elif pilihan == 3:
             # ubah harga
             harga_baru = input_angka("Harga baru        : ")
-            film_target.harga = harga_baru
+            film_target.set_harga(harga_baru)
             # konfirmasi harga berhasil diubah
             print(teks_hijau("Harga berhasil diubah!"))
         elif pilihan == 4:
             # ubah durasi
             durasi_baru = input_angka("Durasi baru(menit): ")
-            film_target.durasi = durasi_baru
+            film_target.set_durasi(durasi_baru)
             # konfirmasi durasi berhasil diubah
             print(teks_hijau("Durasi berhasil diubah!"))
         elif pilihan == 5:
@@ -266,7 +266,7 @@ def hapus_data(daftar):
     index_hapus = -1   # index sasaran (default belum ketemu)
     for i, film in enumerate(daftar):
         # jika id objek cocok dengan id sasaran
-        if film.id == id:
+        if film.get_id() == id:
             # simpan index sasaran
             index_hapus = i
 
@@ -297,7 +297,7 @@ def cari_data(daftar):
     film_cari = None   # objek hasil (default belum ketemu)
     for film in daftar:
         # jika id objek cocok dengan id yang dicari
-        if film.id == id:
+        if film.get_id() == id:
             # simpan objek hasil
             film_cari = film
 
