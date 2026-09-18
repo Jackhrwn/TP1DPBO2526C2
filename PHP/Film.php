@@ -1,6 +1,6 @@
 <?php
 
-// Class Film adalah blueprint untuk objek data film di bioskop
+// Class Film 
 class Film {
     // atribut dibuat private (enkapsulasi)
     private $id;      // atribut id unik film (angka mulai dari 1, contoh: 1, 2, 3)
