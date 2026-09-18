@@ -1,7 +1,6 @@
 <?php
-// File: index.php (berisi halaman web dan logika pengelolaan data)
 
-require_once "Film.php";       // sertakan definisi class Film SEBELUM session_start (agar objek Film dari session bisa di-reload)
+require_once "Film.php";       // class Film SEBELUM session_start (agar objek Film dari session bisa di-reload)
 session_start();               // aktifkan session untuk menyimpan data antar halaman
 
 // jika session daftar_film belum ada, buat dengan list (array) kosong
