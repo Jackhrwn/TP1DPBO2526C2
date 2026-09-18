@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.ArrayList; // import library untuk ArrayList (array dinamis berupa list of object)
 
 public class Film {
     private static final String WARNA_BIRU   = "\033[34m";    // warna biru 
