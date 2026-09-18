@@ -1,5 +1,5 @@
-#include <bits/stdc++.h>
-#include "bioskop.cpp"            
+#include <bits/stdc++.h>    // meng-include hampir semua header standar C++ dalam satu baris. Contohnya: <iostream>, <vector>, <string>, <algorithm>, <map>, <set>, <cmath>, dll.
+#include "bioskop.cpp"      // import file bioskop.cpp
 
 using namespace std;    // agar tidak perlu menulis std:: berulang kali            
 
